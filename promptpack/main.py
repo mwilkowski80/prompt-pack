@@ -216,7 +216,6 @@ def parse_files_from_clipboard() -> list[tuple[str, str]]:
         json_str = json_str[:-len("```")].strip()
     if json_str.startswith("```"):
         json_str = json_str[len("```"):].strip()
-    print(json_str)
     json_obj = json.loads(json_str)
     return [(f["path"], f["content"]) for f in json_obj["files"]]
 
