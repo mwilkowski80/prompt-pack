@@ -16,7 +16,13 @@ import os
 from dotenv import load_dotenv
 
 def load_config(env_path: str) -> dict:
-    load_dotenv(env_path)
+    # Check if file exists first
+    if not os.path.exists(env_path):
+        raise FileNotFoundError(f"Configuration file '{env_path}' not found")
+
+    # Load the .env file
+    if not load_dotenv(env_path):
+        raise Exception(f"Failed to load configuration from '{env_path}'")
 
     # FOLDERS_TO_SCAN (for 'list'/'copy')
     folders_str = os.getenv("FOLDERS_TO_SCAN", "")

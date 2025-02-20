@@ -271,6 +271,9 @@ def main():
     config = {}
     try:
         config = load_config(args.env)
+    except FileNotFoundError as e:
+        print(f"[ERROR] Configuration file '{args.env}' not found. Please create one based on .env.example", file=sys.stderr)
+        sys.exit(1)
     except Exception as e:
         print(f"[ERROR] Failed to load configuration: {e}", file=sys.stderr)
         sys.exit(1)
@@ -287,6 +290,11 @@ def main():
 
     mode = args.mode
 
+    if mode in ["list", "copy"]:
+        if not folders_to_scan:
+            print("[ERROR] No folders to scan configured. Please set FOLDERS_TO_SCAN in your .env file", file=sys.stderr)
+            sys.exit(1)
+
     if mode == "list":
         # existing logic
         accepted_files = scan_folders_recursively(
@@ -296,6 +304,10 @@ def main():
             file_deny_list,
             file_accept_list
         )
+        if not accepted_files:
+            print("[WARN] No files found matching the configured filters", file=sys.stderr)
+            sys.exit(1)
+            
         for (root_folder, file_path) in accepted_files:
             try:
                 rel_path = file_path.relative_to(root_folder)
@@ -313,6 +325,10 @@ def main():
             file_deny_list,
             file_accept_list
         )
+        if not accepted_files:
+            print("[WARN] No files found matching the configured filters", file=sys.stderr)
+            sys.exit(1)
+            
         final_output = build_copy_output(accepted_files, max_file_size, lang_mapping)
         try:
             pyperclip.copy(final_output)
