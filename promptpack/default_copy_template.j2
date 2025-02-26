@@ -1,0 +1,7 @@
+{% if files %}{% for f in files %}{{ f.relative_filepath }}:
+
+```{{ f.language if f.language else '' }}
+{{ f.content }}
+```
+
+{% endfor %}{% else %} No files found! {% endif %}
