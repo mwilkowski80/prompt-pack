@@ -145,6 +145,53 @@ After installing and configuring:
 - If a file is too large, a placeholder (`# [File too large, skipping content]`) is inserted.  
 - For very large codebases, you might exceed ChatGPT input limits – refine your accept/deny filters accordingly.
 
-## 9. License
+## 9. Using Prompt-Pack as an MCP Server
+
+Prompt-Pack can be used as an MCP server, allowing direct integration with MCP-compatible AI clients like Claude Desktop, Cursor, and more.
+
+### 9.1. Setup with MCP
+
+1. Make sure you have `uv` installed (a fast Python package installer and resolver)
+2. Configure your MCP client (like Claude Desktop) with the following settings:
+
+```json
+{
+  "mcpServers": {
+      "prompt-pack": {
+         "command": "uv",
+         "args": ["run", "<local_dir_path>/prompt-pack/mcp-server/mcp_server.py"]
+      }
+  }
+}
+```
+
+Replace `<local_dir_path>` with the actual path to your prompt-pack installation.
+
+### 9.2. MCP Tools
+
+When configured, your AI assistant will have access to these tools:
+
+- **bundle_code**: Bundles source code files from a specified directory using the same powerful filtering capabilities as the CLI
+- **list_files**: Lists files in a directory using specified filter patterns
+
+### 9.3. Example Usage with Cursor
+
+1. Configure the MCP server in Cursor settings: Settings -> MCP -> Add new MCP Server
+2. Select `command` type and provide the following command:
+
+```
+uv run <local_dir_path>/prompt-pack/mcp-server/mcp_server.py
+```
+
+3. Replace `<local_dir_path>` with the actual path to your prompt-pack installation.
+
+Once configured, you can ask your AI assistant in agent mode to:
+
+1. List files in a directory: "Using prompt pack tool list out all adoc files in the current project"
+2. Bundle code for analysis: "Use prompt-pack mcp server tool to review all Rest Controller classes and generate list of available API endpoints"
+
+The AI will use the MCP tools to access your files directly, with the same powerful filtering capabilities as the CLI version.
+
+## 10. License
 
 You can freely use or modify `prompt-pack`. Contributions are welcome!
